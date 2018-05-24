@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="js/plug/bootstrap/bootstrap.min.css">
+    <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/plug/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/plug/layer/layer.js"></script>
+    <style type="text/css">
+        .content{
+            margin-top: 80px; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container content">
+
+        <nav class="navbar navbar-default" role="navigation">
+            <div>
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-form navbar-left navbar-form-nopad" role="search">
+                    <div class="form-inline">
+                        <input type="text" id="search_input" class="form-control" name="" placeholder="关键词">
+                        <select class="form-control" id="fenlei_sel">
+                            <option value="">请选择分类</option>
+                            <option>大神组</option>
+                            <option>女神族</option>
+                        </select>
+                        <button type="submit" id="search_btn" class="btn btn-primary margin-left-10">查询</button>
+                    </div>
+                </div>      
+            </div><!-- /.container-fluid -->
+        </nav>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered" id="myTable">
+
+            </table>
+
+            <nav class="text-center">
+              <ul id="pagination" class="pagination pagination-sm">
+
+             </ul>
+            </nav>                  
+        </div>
+
+        <div>
+            <button type="button" class="btn btn-primary" id="reloadBtn" onclick="">刷新当前页</button>
+            <button type="button" class="btn btn-primary" id="resetBtn" onclick="">重设(跳到第三页)</button>
+        </div>
+
+    </div>
+
+    <script type="text/javascript" src="js/wTable/wTable.min.js"></script>
+    <script type="text/javascript">
+        $('#myTable').wTable({
+            theadData: [
+                ['坐席类型','agentType'],
+                ['姓名','name'],
+                ['坐席工号','queueNo'],
+                ['通话日期','talkCreateTime'],
+                ['拨打量','callCount'],
+                ['接通量','talkCount'],
+                ['联系客户数','customerNumbers'],
+                ['振铃时长','ringTimes'],
+                ['通话时长','talkTimes'],
+                ['话后处理时长','atferTalkTimes'],
+                ['总登陆时长','totalLoginTime'],
+                ['上班天数','onlineDays'],
+                ['坐席薪资','settleMoney']
+            ],
+            trdata: ['data-id','agentId'],
+            paging: "#pagination",
+            url: "php/table.php",
+            rows: 8,
+            search: {
+                searchkey:{
+                    keyword: "#search_input",
+                    classid: "#fenlei_sel"
+                },
+                searchpre: function(){
+                    console.log('执行搜索前方法');
+                    //return false;
+                },
+                searchbtn: "#search_btn"
+            },
+            callbacks: function(){
+                layer.msg('分页完毕');
+            }
+        });
+
+        //刷新
+        $('#reloadBtn').click(function(){
+            $wTable.reload("#myTable");
+        });
+
+        //刷新
+        $('#resetBtn').click(function(){
+            $wTable.reset({
+                table: "#myTable",
+                apiurl: "php/table.php",
+                currPage: 3
+            })
+        });
+    </script>
+</body>
+</html>
