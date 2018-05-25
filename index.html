@@ -9,7 +9,8 @@
     <script type="text/javascript" src="js/plug/layer/layer.js"></script>
     <style type="text/css">
         .content{
-            margin-top: 80px; 
+            margin-top: 50px;
+            margin-bottom: 50px; 
         }
     </style>
 </head>
@@ -22,12 +23,8 @@
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-form navbar-left navbar-form-nopad" role="search">
                     <div class="form-inline">
-                        <input type="text" id="search_input" class="form-control" name="" placeholder="关键词">
-                        <select class="form-control" id="fenlei_sel">
-                            <option value="">请选择分类</option>
-                            <option>大神组</option>
-                            <option>女神族</option>
-                        </select>
+                        <input type="text" id="startTime" class="form-control" name="" placeholder="开始时间">
+                        <input type="text" id="endTime" class="form-control" name="" placeholder="结束时间">
                         <button type="submit" id="search_btn" class="btn btn-primary margin-left-10">查询</button>
                     </div>
                 </div>      
@@ -53,7 +50,7 @@
 
     </div>
 
-    <script type="text/javascript" src="js/wTable/wTable.min.js"></script>
+    <script type="text/javascript" src="js/wTable/wTable.js"></script>
     <script type="text/javascript">
         $('#myTable').wTable({
             theadData: [
@@ -74,21 +71,31 @@
             trdata: ['data-id','agentId'],
             paging: "#pagination",
             url: "php/table.php",
-            rows: 8,
+            rows: 20,
+            currPage: 1,
             search: {
                 searchkey:{
-                    keyword: "#search_input",
-                    classid: "#fenlei_sel"
+                    startTime: "#startTime",
+                    endTime: "#endTime"
                 },
                 searchpre: function(){
-                    console.log('执行搜索前方法');
+                    //console.log('执行搜索前方法');
                     //return false;
                 },
                 searchbtn: "#search_btn"
             },
-            callbacks: function(){
-                layer.msg('分页完毕');
-            }
+            postData: function(post_data){
+                return {
+                    page: post_data.currPage,
+                    pageSize: post_data.rows,
+                    startTime: post_data.search.startTime,
+                    endTime: post_data.search.endTime
+                }
+            },
+            callbacks: function(data){
+                layer.msg('请求完毕');
+            },
+            debug: true
         });
 
         //刷新

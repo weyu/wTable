@@ -18,7 +18,7 @@ License: Apache License 2.0
                 $table = this, //表格
                 $paging = $(options.paging), //分页容器
                 apiurl = options.url, //接口地址
-                currPage = 1, //页码
+                currPage = options.currPage || 1, //页码
                 totalPage = 0, //总页数
                 tableId = this.attr('id'), //表格ID
                 numClass = tableId+'-paging_num_btn', //数字分页按钮class
@@ -60,6 +60,25 @@ License: Apache License 2.0
                     });
                     return searchData;
                 },
+                getPostData = function(){
+
+                    //原始请求数据
+                    var _post = {currPage:currPage, rows:options.rows, search:getSearchData()};
+
+                    // 调试信息
+                    options.debug ? console.log("原始请求数据：",_post) : '';
+
+                    if(options.postData){
+
+                        //自定义请求数据：
+                        var __post = options.postData(_post);
+
+                        // 调试信息
+                        options.debug ? console.log("自定义请求数据：", __post) : '';
+                        return __post;
+                    }
+                    return _post;
+                },
                 //table数据请求方法
                 getTable = function (reset_options){
 
@@ -73,13 +92,17 @@ License: Apache License 2.0
                       shade: .05,
                       time: 0
                     });
-                    
+
+                    //开始请求
                     $.ajax({
                         type: 'post',
                         url: apiurl,
-                        data: {currPage:currPage, rows:options.rows, search:getSearchData()},
+                        data: getPostData(),
                         dataType: "json",
                         success: function(data){
+
+                            //调试信息
+                            options.debug ? console.log("后台返回数据：", data) : '';
 
                             var trList = data.data.list,  //后台返回的表格数据
                                 totalCount = data.data.totalCount, //后台返回的总条数
